@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pop It Game with Congratulations</title>
+    <style>
+        body {
+            margin: 0;
+            align-items: center;
+            display: flex;
+            justify-content: center;
+            background-color: #825CFF;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        .popit {
+            box-shadow: 12px 12px 16px 0 rgba(0, 0, 0, 0.25), -8px -8px 12px 0 rgba(255, 255, 255, 0.3);
+            width: 425px;
+            height: 425px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .pieces {
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .circle {
+            cursor: pointer;
+            width: 14vw;
+            height: 14vw;
+            max-width: 65px;
+            max-height: 65px;
+            margin: 3px;
+            border-radius: 50%;
+            transition: 0.5s;
+            box-shadow: inset 8px 8px 8px rgba(255, 255, 255, 0.3), inset -8px -8px 8px rgba(0, 0, 0, 0.25);
+            -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+        }
+
+        .pressed {
+            box-shadow: inset 8px 8px 8px rgba(0, 0, 0, 0.25), inset -8px -8px 8px rgba(255, 255, 255, 0.3);
+        }
+
+        .r { background-color: #f23c39; }
+        .o { background-color: #fb8f17; }
+        .y { background-color: #fcf620; }
+        .g { background-color: #69d437; }
+        .b { background-color: #3cc1f6; }
+        .p { background-color: #bca3f6; }
+
+        /* Congratulations message styling */
+        .congrats-message {
+            display: none;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #fff;
+        }
+
+        .emojis {
+            font-size: 3rem;
+        }
+
+        .flowers img {
+            width: 100px;
+            height: auto;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="popit" class="popit">
+        <div class="pieces r">
+            <div class="circle r"></div>
+            <div class="circle r"></div>
+            <div class="circle r"></div>
+        </div>
+        <div class="pieces o">
+            <div class="circle o"></div>
+            <div class="circle o"></div>
+            <div class="circle o"></div>
+            <div class="circle o"></div>
+            <div class="circle o"></div>
+        </div>
+        <div class="pieces y">
+            <div class="circle y"></div>
+            <div class="circle y"></div>
+            <div class="circle y"></div>
+            <div class="circle y"></div>
+            <div class="circle y"></div>
+            <div class="circle y"></div>
+        </div>
+        <div class="pieces g">
+            <div class="circle g"></div>
+            <div class="circle g"></div>
+            <div class="circle g"></div>
+            <div class="circle g"></div>
+            <div class="circle g"></div>
+            <div class="circle g"></div>
+        </div>
+        <div class="pieces b">
+            <div class="circle b"></div>
+            <div class="circle b"></div>
+            <div class="circle b"></div>
+            <div class="circle b"></div>
+            <div class="circle b"></div>
+        </div>
+        <div class="pieces p">
+            <div class="circle p"></div>
+            <div class="circle p"></div>
+            <div class="circle p"></div>
+        </div>
+    </div>
+
+    <!-- Congratulations Message -->
+    <div class="congrats-message" id="congratsMessage">
+        🎉 Congratulations! 🎉
+        <div class="emojis">🎊🎈🎁💐🎂</div>
+        <div class="flowers">
+            <img src="https://example.com/flower1.png" alt="Flower 1">
+            <img src="https://example.com/flower2.png" alt="Flower 2">
+        </div>
+    </div>
+
+    <script>
+        const sound = new Audio("https://freesound.org/data/previews/399/399934_1676145-lq.mp3");
+
+        const circles = document.querySelectorAll('.circle');
+        let clickedCount = 0;
+
+        // Handle circle clicks
+        circles.forEach(circle => {
+            circle.onclick = function (event) {
+                const target = event.target;
+                if (!target.matches(".circle")) return;
+
+                // Play sound and toggle "pressed" state
+                sound.pause();
+                sound.currentTime = 0;
+                sound.play();
+                if ("vibrate" in navigator) {
+                    navigator.vibrate(100);
+                }
+                target.classList.toggle("pressed");
+
+                // Increment click counter
+                clickedCount++;
+
+                // Check if all circles are pressed
+                if (clickedCount === circles.length) {
+                    setTimeout(showCongratsMessage, 1000); // 1 second delay after completion
+                }
+            };
+        });
+
+        // Function to show congratulations message
+        function showCongratsMessage() {
+            const congratsMessage = document.getElementById('congratsMessage');
+            congratsMessage.style.display = 'block';
+
+            // Use Web Speech API to say congratulations
+            const speech = new SpeechSynthesisUtterance();
+            speech.text = "Congratulations! You've completed the game!";
+            speech.lang = 'en-US';
+            window.speechSynthesis.speak(speech);
+        }
+    </script>
+</body>
+</html>
